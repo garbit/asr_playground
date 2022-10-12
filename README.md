@@ -53,6 +53,7 @@ python main.py
 
 # Useful commands
 ## youtube-dl
+It's useful to be able to download youtube audio clips using [youtube-dl](https://github.com/ytdl-org/youtube-dl) and run:
 ```
 youtube-dl -f bestaudio --extract-audio --audio-format mp3 --audio-quality 0 "https://www.youtube.com/watch?v=RDr0Id_y15M"
 ```
