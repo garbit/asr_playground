@@ -35,24 +35,22 @@ pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization")
 # youtube_url = "https://www.youtube.com/watch?v=RDr0Id_y15M"
 diarization = pipeline("audio.wav")
 
-speakers = {
-    "SPEAKER_00": "P1_Nicole",
-    "SPEAKER_01": "P1_Lilly",
-    "SPEAKER_02": "P2_Dorothy",
-    "SPEAKER_03": "P3_Ryan",
-}
-
 turns = []
 for turn, _, speaker in diarization.itertracks(yield_label=True):
     turns.append({
         "start": turn.start,
         "end": turn.end,
-        "speaker": speakers[speaker]
+        "speaker": speaker
     })
 
+print("Splitting Audio")
+split_count = 0
 for turn in turns:
+    split_count = split_count + 1
     split_audio_at_timestamp(turn['start'], turn['end'], 'audio.wav', f'outputs/{turn["start"]}-{turn["end"]}-{turn["speaker"]}.wav')
+    print(f"Split {split_count}/{len(turns)}")
 
+print('Transcribing Audio')
 # load asr
 model = whisper.load_model("base")
 model_transcribe_start_time = time.time()
@@ -69,8 +67,10 @@ for turn in turns:
         "speaker": turn["speaker"],
         "url": f"https://youtu.be/RDr0Id_y15M?t={int(turn['start'])}"
     })
+    print(f"transcribed {len(transcriptions)}/{len(turns)}")
 
 with open('transcript.json', 'w') as f:
     f.write(json.dumps(transcriptions))
-        
+
+print("Outputfile: transcript.json")
 # print(f'Transcribed in {round(model_transcribe_end_time - model_transcribe_start_time)}secs')
