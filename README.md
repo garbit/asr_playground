@@ -44,6 +44,13 @@ poetry shell
 poetry install
 ```
 
+# Running
+You can run the script using:
+
+```
+python main.py
+```
+
 # Useful commands
 ## youtube-dl
 ```
